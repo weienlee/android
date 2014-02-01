@@ -18,18 +18,18 @@ public class DisplayMessageActivity extends Activity {
 		setContentView(R.layout.activity_display_message);
 		// Show the Up button in the action bar.
 		setupActionBar();
-		
+
 		// Get the message from the intent
 		Intent intent = getIntent();
 		String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-		
-		// Create the text view
-	    TextView textView = new TextView(this);
-	    textView.setTextSize(40);
-	    textView.setText(message);
 
-	    // Set the text view as the activity layout
-	    setContentView(textView);
+		// Create the text view
+		TextView textView = (TextView) findViewById(R.id.display_message);
+		textView.setTextSize(40);
+		textView.setText(message);
+
+		// Set the text view as the activity layout
+		// setContentView(textView);
 	}
 
 	/**

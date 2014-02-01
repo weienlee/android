@@ -25,9 +25,10 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_search=0x7f080002;
-        public static final int action_settings=0x7f080001;
-        public static final int edit_message=0x7f080000;
+        public static final int action_search=0x7f080003;
+        public static final int action_settings=0x7f080002;
+        public static final int display_message=0x7f080000;
+        public static final int edit_message=0x7f080001;
     }
     public static final class layout {
         public static final int activity_display_message=0x7f030000;
@@ -49,6 +50,7 @@ public final class R {
         public static final int title_activity_main=0x7f050005;
     }
     public static final class style {
+        public static final int ActionBar=0x7f060002;
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -68,7 +70,6 @@ public final class R {
         AppBaseTheme from BOTH res/values/styles.xml and
         res/values-v11/styles.xml on API 14+ devices.
     
- API 14 theme customizations can go here. 
          */
         public static final int AppBaseTheme=0x7f060000;
         /**  Application theme. 

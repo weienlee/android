@@ -6,8 +6,13 @@
         res/values-v11/styles.xml on API 14+ devices.
     -->
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
-        <item name="android:windowActionBarOverlay">true</item>
         <!-- API 14 theme customizations can go here. -->
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/ActionBar</item>
     </style>
 
+    <style name="ActionBar" parent="@android:style/Widget.Holo.ActionBar">
+    	<item name="android:background">#10000000</item>
+	</style>
+    
 </resources>
