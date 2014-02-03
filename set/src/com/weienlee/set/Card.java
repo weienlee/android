@@ -5,7 +5,7 @@ public class Card {
 	public enum Shape {DIAMOND, ROUND, SQUIGGLE};
 	public enum Shading {EMPTY, STRIPE, FILLED};
 
-	private final int number;
+	private final Integer number;
 	private final Color color;
 	private final Shape shape;
 	private final Shading shading;
@@ -18,7 +18,7 @@ public class Card {
 	 * @param inputShape
 	 * @param inputShading
 	 */
-	public Card(int inputNumber, Color inputColor, Shape inputShape, Shading inputShading) {
+	public Card(Integer inputNumber, Color inputColor, Shape inputShape, Shading inputShading) {
 		this.number = inputNumber;
 		this.color = inputColor;
 		this.shape = inputShape;
@@ -30,7 +30,7 @@ public class Card {
 	 * 
 	 * @return this.number
 	 */
-	public int getNumber() {
+	public Integer getNumber() {
 		return this.number;
 	}
 	
@@ -61,4 +61,11 @@ public class Card {
 		return this.shading;
 	}
 	
+	@Override
+	public String toString() {
+		return this.number.toString() + " " +
+				this.color + " " +
+				this.shape + " " +
+				this.shading;
+	}
 }

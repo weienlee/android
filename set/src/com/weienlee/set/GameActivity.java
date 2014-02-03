@@ -4,28 +4,55 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Chronometer;
+import android.widget.GridView;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.os.Build;
 
 public class GameActivity extends Activity {
 
+	GridView gridView;
+	Deck deck;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
         // remove title
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+		/* requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            WindowManager.LayoutParams.FLAG_FULLSCREEN); */
 		
 		setContentView(R.layout.activity_game);
-		startGame();
+		
 		// Show the Up button in the action bar.
-		// setupActionBar();
+		setupActionBar();
+		
+		startGame();
+		gridView = (GridView) findViewById(R.id.gridView);
+		ArrayAdapter<Card> adapter = new ArrayAdapter<Card>(this,
+				android.R.layout.simple_list_item_1, deck.getCards().subList(0, 12));
+		
+		// gridView.setAdapter(adapter);
+		
+		gridView.setAdapter(new CardAdapter(this, deck.getCards().subList(0,12)));
+		
+		
+	    gridView.setOnItemClickListener(new OnItemClickListener() {
+	        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	        	Toast.makeText(GameActivity.this,v.getContentDescription(), Toast.LENGTH_SHORT).show();
+	        }
+	    });
+
 	}
 
 	/**
@@ -64,6 +91,9 @@ public class GameActivity extends Activity {
 
 	
 	private void startGame() {
+		deck = new Deck();
 		((Chronometer) findViewById(R.id.timer)).start();
+		
 	}
+	
 }

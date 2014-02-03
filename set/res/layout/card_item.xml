@@ -1,0 +1,7 @@
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="30dp"
+    android:layout_height="80dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp" />
+
+<!-- android:src="@drawable/green_diamond_empty" -->
