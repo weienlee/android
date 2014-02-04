@@ -1,10 +1,8 @@
 package com.weienlee.set;
 
-import java.util.HashMap;
-import java.util.List;
 
+import java.util.List;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

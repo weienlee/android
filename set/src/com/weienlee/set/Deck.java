@@ -1,7 +1,8 @@
 package com.weienlee.set;
 
-import java.util.ArrayList;
+
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import com.weienlee.set.Card.Color;
 import com.weienlee.set.Card.Shape;
@@ -9,7 +10,7 @@ import com.weienlee.set.Card.Shading;
 
 
 public class Deck {
-	private List<Card> cards = new ArrayList<Card>();
+	private List<Card> cards = new LinkedList<Card>();
 	
 	public Deck() {
 		// populate Deck
