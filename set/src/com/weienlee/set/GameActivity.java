@@ -2,6 +2,7 @@ package com.weienlee.set;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -27,10 +29,15 @@ public class GameActivity extends Activity {
 	private GridView gridView;
 	private Deck deck;
 	private List<Card> deckCards;
-	private List<Card> currentCards;
+	private List<Card> currentCards = new ArrayList<Card>();
 	private List<String> selectedCards = new ArrayList<String> ();
 	private List<String> currentPointers = new ArrayList<String> ();
 	private CardAdapter adapter;
+	private final int mask0 = 85; //0b01010101
+	private final int mask1 = 170; //0b10101010
+	boolean extraCards = false;
+	private int deckSize = 81;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,18 @@ public class GameActivity extends Activity {
 			}
 		});
 	    
+	    Button noSetButton = (Button) findViewById(R.id.no_set_button);
+	    noSetButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	if (!noSet()) {
+            		Toast.makeText(GameActivity.this, "there is a set somewhere", Toast.LENGTH_SHORT).show();
+            	} else {
+            		dealExtraCards();
+    				adapter.notifyDataSetChanged();
+            	}
+            }
+	    });
+
 	    
 	}
 
@@ -115,7 +134,6 @@ public class GameActivity extends Activity {
 	    	String idString = id+"";
 	    	int action = event.getActionMasked();
 	    	int actionIndex = event.getActionIndex();
-    		int pv = gridView.pointToPosition(x,y);
 	    		
 	    	switch (action)	{
 	    	case MotionEvent.ACTION_DOWN:
@@ -146,14 +164,20 @@ public class GameActivity extends Activity {
 	
 	private void startGame() {
 		deck = new Deck();
-		currentCards = deck.getCards().subList(0, 12);
-		deckCards = deck.getCards().subList(12,81);
+		deckSize = deck.getCards().size();
+		for (int i=0;i<12;i++) {
+			currentCards.add(deck.getCards().get(i));
+		}
+		//deckCards = deck.getCards().subList(12,81);
+		deckCards = deck.getCards().subList(12,deckSize);
+		deckSize -= 12;
 		((Chronometer) findViewById(R.id.timer)).start();
 		
 	}
 	
 	private void toggleCard(View v, int position) {
 		String positionString = position+"";
+		
 		if (selectedCards.contains(positionString)) {
 			v.findViewById(R.id.card_border).setBackgroundColor(Color.WHITE);
 			selectedCards.remove(positionString);
@@ -174,16 +198,63 @@ public class GameActivity extends Activity {
 	}
 	
 	private void dealNewSet() {
-		if (deckCards.size()>0) {
-			for (int i=0; i<3; i++) {
-				int position = Integer.parseInt(selectedCards.get(i));
-				currentCards.set(position, deckCards.get(i));
+		if (deckSize>0) {
+			if (!extraCards) {
+				for (int i=0; i<3; i++) {
+					int position = Integer.parseInt(selectedCards.get(i));
+					currentCards.set(position, deckCards.get(i));
+				}
+				deckCards = deckCards.subList(3, deckCards.size());
+				deckSize -= 3;
+			} else if (extraCards) {
+				if (selectedCards.contains("12") && selectedCards.contains("13") && selectedCards.contains("14")) {
+					dealExtraCards();
+				} else {
+					List<Card> extraCardsList = currentCards.subList(12, 15);
+					List<Integer> toBeReplaced = new ArrayList<Integer>();
+					List<Integer> leftOver = new ArrayList<Integer>(Arrays.asList(12, 13, 14));
+					for (int i=0; i<3; i++) {
+						int position = Integer.parseInt(selectedCards.get(i));
+						if (position < 12) {
+							toBeReplaced.add(position);
+						} else {
+							leftOver.remove((Integer)position);
+						}
+					}
+					for (int i=0; i<toBeReplaced.size(); i++) {
+						currentCards.set(toBeReplaced.get(i), extraCardsList.get(leftOver.get(i)-12));
+					}
+					currentCards.remove(14);
+					currentCards.remove(13);
+					currentCards.remove(12);
+					
+					extraCards = false;
+					
+				}
 			}
-			deckCards = deckCards.subList(3, deckCards.size());
 		} else {
 			Toast.makeText(GameActivity.this, "you win!", Toast.LENGTH_SHORT).show();
 		}
-		
+	}
+	
+	private void dealExtraCards() {
+		if (deckSize > 0) {
+			if (!extraCards) {
+				currentCards.addAll(deckCards.subList(0,3));
+				extraCards = true;
+			} else if (extraCards) {
+				for (int i=0; i<3; i++) {
+					currentCards.set(i+12,deckCards.get(i));
+				}
+			}
+			
+			deckCards = deckCards.subList(3, deckCards.size());
+			deckSize -= 3;
+			
+		} else {
+			Toast.makeText(GameActivity.this, "you win!", Toast.LENGTH_SHORT).show();
+			// win();
+		}
 	}
 	
 	private void clearSelected() {
@@ -194,28 +265,46 @@ public class GameActivity extends Activity {
 		selectedCards.clear();
 	}
 	
+	
 	private boolean testSet(List<String> inputSet) {
 		assert (inputSet.size() == 3);
 		Card card1 = currentCards.get(Integer.parseInt(inputSet.get(0)));
 		Card card2 = currentCards.get(Integer.parseInt(inputSet.get(1)));
 		Card card3 = currentCards.get(Integer.parseInt(inputSet.get(2)));
 		
-		boolean number = (checkCharacteristic(card1.getNumber(), card2.getNumber(), card3.getNumber()));
-		boolean color = (checkCharacteristic(card1.getColor(), card2.getColor(), card3.getColor()));
-		boolean shape = (checkCharacteristic(card1.getShape(), card2.getShape(), card3.getShape()));
-		boolean shading = (checkCharacteristic(card1.getShading(), card2.getShading(), card3.getShading()));
+		boolean number = (((card1.getNumber() + card2.getNumber() + card3.getNumber()) % 3) == 0);
+		boolean color = (((card1.getColor() + card2.getColor() + card3.getColor()) % 3) == 0);
+		boolean shape = (((card1.getShape() + card2.getShape() + card3.getShape()) % 3) == 0);
+		boolean shading = (((card1.getShading() + card2.getShading() + card3.getShading()) % 3) == 0);
 		
 		return (number && color && shape && shading);
 
 	}
-
-	private boolean checkCharacteristic(Object c1, Object c2, Object c3) {
-		if (c1.equals(c2) && c2.equals(c3)) {
-			return true;
-		} else if (!c1.equals(c2) && !c2.equals(c3) && !c1.equals(c3)) {
-			return true;
-		} else {
-			return false;
+	
+	private int thirdCardBits(Card card1, Card card2) {
+		int x = card1.getBits();
+		int y = card2.getBits();
+		int xor = x^y;
+		int swap = ((xor & mask1) >> 1) | ((xor & mask0) << 1);
+		return (x&y) | (~(x|y) & swap);
+	}
+	
+	
+	// algorithm based on the one described at the following site:
+	// http://code.activestate.com/recipes/578508-finding-sets-in-the-card-game-set/
+	private boolean noSet() {
+		int[] have = new int[256];
+		for (Card card : currentCards) {
+			have[card.getBits()] = currentCards.indexOf(card);
 		}
+		for (int i=0; i<currentCards.size(); i++) {
+			for (int j=i+1; j<currentCards.size(); j++) {
+				int k = have[thirdCardBits(currentCards.get(i), currentCards.get(j))];
+				if (k > j) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

@@ -13,7 +13,10 @@ import android.widget.LinearLayout;
 public class CardAdapter extends BaseAdapter {
 	private Context context;
 	private List<Card> currentCards;
-
+	private String[] colorMap = {"green", "purple", "red"};
+	private String[] shapeMap = {"diamond", "round", "squiggle"};
+	private String[] shadingMap = {"empty", "filled", "stripe"};
+	
 	//private HashMap<String, Integer> images = new HashMap<String, Integer>();
 	
 	public CardAdapter(Context context, List<Card> currentCards) {
@@ -47,10 +50,11 @@ public class CardAdapter extends BaseAdapter {
 				.findViewById(R.id.card_inner_container);
 
 		Card card = currentCards.get(position);
-		String imageName = card.getColor() + "_" + card.getShape() + "_" + card.getShading();
-		imageName = imageName.toLowerCase();
+		String imageName = colorMap[card.getColor()] + "_" + 
+				shapeMap[card.getShape()] + "_" +
+				shadingMap[card.getShading()];
 
-		for (int i = 1; i <= card.getNumber(); i++) {
+		for (int i = 1; i <= card.getNumber()+1; i++) {
 			int resID = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
 			ImageView image = (ImageView) (inflater.inflate(R.layout.card_item, innerContainer, false));
 			image.setImageResource(resID);

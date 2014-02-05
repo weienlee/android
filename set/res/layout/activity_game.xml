@@ -29,14 +29,14 @@
         android:layout_height="20dp"
         android:layout_weight="5">
 
-        <TextView
-            android:id="@+id/helloworld_text"
+        <Button
+            android:id="@+id/no_set_button"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:gravity="left|center"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@+id/timer"
-            android:text="@string/hello_world" />
+            android:text="@string/no_set" />
 
         <Chronometer
             android:id="@+id/timer"

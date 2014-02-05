@@ -5,10 +5,11 @@ public class Card {
 	public enum Shape {DIAMOND, ROUND, SQUIGGLE};
 	public enum Shading {EMPTY, STRIPE, FILLED};
 
-	private final Integer number;
-	private final Color color;
-	private final Shape shape;
-	private final Shading shading;
+	private final int number;
+	private final int color;
+	private final int shape;
+	private final int shading;
+	private final int bits;
 	
 	/**
 	 * Initializes Card object with the given input attributes
@@ -18,11 +19,15 @@ public class Card {
 	 * @param inputShape
 	 * @param inputShading
 	 */
-	public Card(Integer inputNumber, Color inputColor, Shape inputShape, Shading inputShading) {
+	public Card(int inputNumber, int inputColor, int inputShape, int inputShading) {
 		this.number = inputNumber;
 		this.color = inputColor;
 		this.shape = inputShape;
 		this.shading = inputShading;
+		this.bits = (inputNumber << 6) + 
+				(inputColor << 4) + 
+				(inputShape << 2) + 
+				(inputShading);
 	}
 	
 	/**
@@ -30,7 +35,7 @@ public class Card {
 	 * 
 	 * @return this.number
 	 */
-	public Integer getNumber() {
+	public int getNumber() {
 		return this.number;
 	}
 	
@@ -39,7 +44,7 @@ public class Card {
 	 * 
 	 * @return this.color
 	 */
-	public Color getColor() {
+	public int getColor() {
 		return this.color;
 	}
 	
@@ -48,7 +53,7 @@ public class Card {
 	 * 
 	 * @return this.shape
 	 */
-	public Shape getShape() {
+	public int getShape() {
 		return this.shape;
 	}
 	
@@ -57,13 +62,22 @@ public class Card {
 	 * 
 	 * @return this.shading
 	 */
-	public Shading getShading() {
+	public int getShading() {
 		return this.shading;
+	}
+	
+	/**
+	 * Gets the binary representation of the card
+	 * 
+	 * @return
+	 */
+	public int getBits() {
+		return this.bits;
 	}
 	
 	@Override
 	public String toString() {
-		return this.number.toString() + " " +
+		return this.number + " " +
 				this.color + " " +
 				this.shape + " " +
 				this.shading;
