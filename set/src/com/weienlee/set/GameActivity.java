@@ -3,24 +3,26 @@ package com.weienlee.set;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 
@@ -33,10 +35,13 @@ public class GameActivity extends Activity {
 	private List<String> selectedCards = new ArrayList<String> ();
 	private List<String> currentPointers = new ArrayList<String> ();
 	private CardAdapter adapter;
+	private Chronometer timer;
 	private final int mask0 = 85; //0b01010101
 	private final int mask1 = 170; //0b10101010
 	boolean extraCards = false;
 	private int deckSize = 81;
+	private long timeWhenStopped = 0;
+	private boolean paused = false;
 	
 	
 	@Override
@@ -47,6 +52,9 @@ public class GameActivity extends Activity {
 		/* requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN); */
+		
+		Window win = getWindow();
+		win.addFlags(WindowManager.LayoutParams.FLAG_SECURE);
 		
 		setContentView(R.layout.activity_game);
 		
@@ -77,6 +85,12 @@ public class GameActivity extends Activity {
             }
 	    });
 
+	    Button pauseButton = (Button) findViewById(R.id.pause_button);
+	    pauseButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	pause();
+            }
+	    });
 	    
 	}
 
@@ -114,6 +128,13 @@ public class GameActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void onStop() {
+		super.onStop();
+		if (!paused) {
+			pause();
+		}
+	}
+	
 	private void clickItemView(int px, int py) {
 		int pv = gridView.pointToPosition(px,py);
 		long id = gridView.pointToRowId(px,py);
@@ -171,7 +192,8 @@ public class GameActivity extends Activity {
 		//deckCards = deck.getCards().subList(12,81);
 		deckCards = deck.getCards().subList(12,deckSize);
 		deckSize -= 12;
-		((Chronometer) findViewById(R.id.timer)).start();
+		timer = ((Chronometer) findViewById(R.id.timer));
+		timer.start();
 		
 	}
 	
@@ -306,5 +328,45 @@ public class GameActivity extends Activity {
 			}
 		}
 		return true;
+	}
+	
+	private void pause() {
+		gridView.setVisibility(View.INVISIBLE);
+		timeWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
+		timer.stop();
+		paused = true;
+		AlertDialog.Builder pauseBuilder = new AlertDialog.Builder(this);
+        pauseBuilder.setMessage("click resume to continue playing!");
+        pauseBuilder.setCancelable(true);
+        pauseBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {         
+        	@Override
+        	public void onCancel(DialogInterface dialog) {
+        		resume();
+            }
+        });
+        pauseBuilder.setPositiveButton("New Game",
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            	resume();
+                dialog.cancel();
+            }
+        });
+        pauseBuilder.setNegativeButton("Resume",
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            	resume();
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog pauseDialog = pauseBuilder.create();
+        pauseDialog.show();
+	}
+	
+	private void resume() {
+		gridView.setVisibility(View.VISIBLE);
+		timer.setBase(SystemClock.elapsedRealtime() + timeWhenStopped);
+		timer.start();
+		paused = false;
 	}
 }

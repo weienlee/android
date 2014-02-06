@@ -9,5 +9,6 @@
     <string name="help_button">How to Play</string>
     <string name="title_activity_game">SET Game</string>
     <string name="no_set">no set</string>
+    <string name="pause">Pause</string>
 
 </resources>

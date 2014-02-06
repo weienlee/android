@@ -55,13 +55,14 @@ public final class R {
         public static final int red_squiggle_stripe=0x7f02001b;
     }
     public static final class id {
-        public static final int action_settings=0x7f090007;
-        public static final int card_border=0x7f090003;
-        public static final int card_inner_container=0x7f090005;
-        public static final int card_spacing_left=0x7f090004;
-        public static final int card_spacing_right=0x7f090006;
+        public static final int action_settings=0x7f090008;
+        public static final int card_border=0x7f090004;
+        public static final int card_inner_container=0x7f090006;
+        public static final int card_spacing_left=0x7f090005;
+        public static final int card_spacing_right=0x7f090007;
         public static final int gridView=0x7f090000;
-        public static final int no_set_button=0x7f090001;
+        public static final int no_set_button=0x7f090003;
+        public static final int pause_button=0x7f090001;
         public static final int timer=0x7f090002;
     }
     public static final class layout {
@@ -82,6 +83,7 @@ public final class R {
         public static final int main_center_text=0x7f060002;
         public static final int new_game_button=0x7f060003;
         public static final int no_set=0x7f060007;
+        public static final int pause=0x7f060008;
         public static final int title_activity_game=0x7f060006;
     }
     public static final class style {
