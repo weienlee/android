@@ -14,7 +14,7 @@
         android:id="@+id/gridView"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="80"
         android:columnWidth="90dp"
         android:gravity="center"
@@ -29,13 +29,25 @@
         android:layout_height="20dp"
         android:layout_weight="10">
 
+        <ImageView
+            android:id="@+id/pause_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:src="@drawable/pause_icon" 
+            />
+        
         <Button
             android:id="@+id/pause_button" 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left|center"
             android:text="@string/pause"
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
+            android:visibility="gone"
             />
         
         <Chronometer
@@ -43,6 +55,8 @@
             android:gravity="left|center"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:textSize="25sp"
+            android:fontFamily="Roboto Black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
             
@@ -53,8 +67,19 @@
             android:layout_height="wrap_content"
             android:gravity="left|center"
             android:text="@string/no_set" 
+            android:visibility="gone"	
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"/>
         
+        <ImageView
+            android:id="@+id/no_set_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:src="@drawable/no_set_icon"
+            />
 
         
     </RelativeLayout>

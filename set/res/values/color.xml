@@ -2,4 +2,5 @@
 <resources>
   <color name="select">#D5FBFF</color>
   <color name="transparent">#00000000</color>
+  <color name="DDgray">#DDDDDD</color>
 </resources>

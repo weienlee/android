@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -19,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
@@ -43,7 +45,6 @@ public class GameActivity extends Activity {
 	private long timeWhenStopped = 0;
 	private boolean paused = false;
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,6 +61,9 @@ public class GameActivity extends Activity {
 		
 		// Show the Up button in the action bar.
 		setupActionBar();
+		
+		// set up timer
+		timer = ((Chronometer) findViewById(R.id.timer));
 		
 		startGame();
 		gridView = (GridView) findViewById(R.id.gridView);
@@ -92,6 +96,27 @@ public class GameActivity extends Activity {
             }
 	    });
 	    
+	    ImageView pauseImage = (ImageView) findViewById(R.id.pause_icon);
+	    pauseImage.setOnClickListener(new View.OnClickListener() {
+	        public void onClick(View v) {
+	        	pause();
+	        }
+	    });
+	    
+	    ImageView noSetImage = (ImageView) findViewById(R.id.no_set_icon);
+	    noSetImage.setOnClickListener(new View.OnClickListener() {
+	    	@Override
+	    	public void onClick(View v) {
+            	if (!noSet()) {
+            		Toast toast = Toast.makeText(GameActivity.this, "there is a set somewhere", Toast.LENGTH_SHORT);
+            		toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 200);
+            		toast.show();
+            	} else {
+            		dealExtraCards();
+    				adapter.notifyDataSetChanged();
+            	}
+	    	}
+	    });
 	}
 
 	/**
@@ -189,12 +214,29 @@ public class GameActivity extends Activity {
 		for (int i=0;i<12;i++) {
 			currentCards.add(deck.getCards().get(i));
 		}
-		//deckCards = deck.getCards().subList(12,81);
 		deckCards = deck.getCards().subList(12,deckSize);
 		deckSize -= 12;
-		timer = ((Chronometer) findViewById(R.id.timer));
+		timer.setBase(SystemClock.elapsedRealtime());
 		timer.start();
 		
+	}
+	
+	private void restartGame() {
+		
+		// reset values
+		extraCards = false;
+		paused = false;
+		timeWhenStopped = 0;
+        
+        //clear all lists
+		selectedCards.clear();
+		currentPointers.clear();
+		currentCards.clear();
+		deckCards.clear();
+		
+		// start new game
+		startGame();
+		adapter.notifyDataSetChanged();
 	}
 	
 	private void toggleCard(View v, int position) {
@@ -213,7 +255,9 @@ public class GameActivity extends Activity {
 					adapter.notifyDataSetChanged();
 				} else {
 					clearSelected();
-					Toast.makeText(GameActivity.this, "invalid set", Toast.LENGTH_SHORT).show();
+					Toast toast = Toast.makeText(GameActivity.this, "invalid set", Toast.LENGTH_SHORT);
+            		toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 200);
+            		toast.show();
 				}
 			}
 		}
@@ -255,7 +299,21 @@ public class GameActivity extends Activity {
 				}
 			}
 		} else {
-			Toast.makeText(GameActivity.this, "you win!", Toast.LENGTH_SHORT).show();
+			// get selected cards in descending order
+			Integer[] toBeRemoved = new Integer[3];
+			for (int i=0; i<3; i++) {
+				toBeRemoved[i] = Integer.parseInt(selectedCards.get(i));
+			}
+			Arrays.sort(toBeRemoved);
+			
+			// removed selected cards
+			for (int i=2; i>=0; i--) {
+				currentCards.remove((int)toBeRemoved[i]);	
+			}
+			
+			if (noSet()) {
+				win();
+			}
 		}
 	}
 	
@@ -274,8 +332,7 @@ public class GameActivity extends Activity {
 			deckSize -= 3;
 			
 		} else {
-			Toast.makeText(GameActivity.this, "you win!", Toast.LENGTH_SHORT).show();
-			// win();
+			win();
 		}
 	}
 	
@@ -286,7 +343,6 @@ public class GameActivity extends Activity {
 		}
 		selectedCards.clear();
 	}
-	
 	
 	private boolean testSet(List<String> inputSet) {
 		assert (inputSet.size() == 3);
@@ -329,8 +385,9 @@ public class GameActivity extends Activity {
 		}
 		return true;
 	}
+
 	
-	private void pause() {
+private void pause() {
 		gridView.setVisibility(View.INVISIBLE);
 		timeWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
 		timer.stop();
@@ -347,12 +404,11 @@ public class GameActivity extends Activity {
         pauseBuilder.setPositiveButton("New Game",
                 new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-            	resume();
+            	restartGame();
                 dialog.cancel();
             }
         });
-        pauseBuilder.setNegativeButton("Resume",
-                new DialogInterface.OnClickListener() {
+        pauseBuilder.setNegativeButton("Resume", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
             	resume();
                 dialog.cancel();
@@ -361,7 +417,7 @@ public class GameActivity extends Activity {
 
         AlertDialog pauseDialog = pauseBuilder.create();
         pauseDialog.show();
-	}
+}
 	
 	private void resume() {
 		gridView.setVisibility(View.VISIBLE);
@@ -369,4 +425,24 @@ public class GameActivity extends Activity {
 		timer.start();
 		paused = false;
 	}
+	
+	
+	private void win() {
+		timeWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
+		timer.stop();
+		AlertDialog.Builder winBuilder = new AlertDialog.Builder(this);
+        winBuilder.setMessage("Congratulations! Final score: " + timer.getText());
+        winBuilder.setCancelable(false);
+        winBuilder.setPositiveButton("New Game",
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            	restartGame();
+                dialog.cancel();
+            }
+        });
+        
+        AlertDialog winDialog = winBuilder.create();
+        winDialog.show();
+	}
+	
 }

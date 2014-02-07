@@ -4,9 +4,6 @@ package com.weienlee.set;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import com.weienlee.set.Card.Color;
-import com.weienlee.set.Card.Shape;
-import com.weienlee.set.Card.Shading;
 
 
 public class Deck {
@@ -14,7 +11,7 @@ public class Deck {
 	
 	public Deck() {
 		// populate Deck
-		 
+		
 		for (int number=0; number<=2; number++) {
 			for (int color=0; color<=2; color++) {
 				for (int shape=0; shape<=2; shape++) {
