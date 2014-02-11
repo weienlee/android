@@ -1,6 +1,7 @@
 package com.weienlee.set;
 
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +45,13 @@ public class GameActivity extends Activity {
 	private int deckSize = 81;
 	private long timeWhenStopped = 0;
 	private boolean paused = false;
+	private boolean gameOver = false;
+	
+	// score related
+	private int errors = 0;
+	private int noSetErrors = 0;
+	private int numSets = 0;
+	private int numNoSets = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +89,10 @@ public class GameActivity extends Activity {
 	    noSetButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	if (!noSet()) {
+            		noSetErrors += 1;
             		Toast.makeText(GameActivity.this, "there is a set somewhere", Toast.LENGTH_SHORT).show();
             	} else {
+            		numNoSets += 1;
             		dealExtraCards();
     				adapter.notifyDataSetChanged();
             	}
@@ -125,7 +135,9 @@ public class GameActivity extends Activity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void setupActionBar() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getActionBar().setDisplayHomeAsUpEnabled(false);
+			getActionBar().setDisplayShowHomeEnabled(false);
+			//getActionBar().setDisplayShowTitleEnabled(false);
 		}
 	}
 
@@ -155,7 +167,7 @@ public class GameActivity extends Activity {
 
 	public void onStop() {
 		super.onStop();
-		if (!paused) {
+		if (!paused && !gameOver) {
 			pause();
 		}
 	}
@@ -218,7 +230,7 @@ public class GameActivity extends Activity {
 		deckSize -= 12;
 		timer.setBase(SystemClock.elapsedRealtime());
 		timer.start();
-		
+		getActionBar().setTitle("Cards Remaining: 81");
 	}
 	
 	private void restartGame() {
@@ -226,7 +238,14 @@ public class GameActivity extends Activity {
 		// reset values
 		extraCards = false;
 		paused = false;
+		gameOver = false;
 		timeWhenStopped = 0;
+		
+		// reset score values
+		errors = 0;
+		noSetErrors = 0;
+		numSets = 0;
+		numNoSets = 0;
         
         //clear all lists
 		selectedCards.clear();
@@ -253,8 +272,11 @@ public class GameActivity extends Activity {
 					dealNewSet();
 					clearSelected();
 					adapter.notifyDataSetChanged();
+					getActionBar().setTitle("Cards Remaining: " + (deckSize+currentCards.size()));
+					numSets += 1;
 				} else {
 					clearSelected();
+					errors += 1;
 					Toast toast = Toast.makeText(GameActivity.this, "invalid set", Toast.LENGTH_SHORT);
             		toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, 200);
             		toast.show();
@@ -330,7 +352,7 @@ public class GameActivity extends Activity {
 			
 			deckCards = deckCards.subList(3, deckCards.size());
 			deckSize -= 3;
-			
+			getActionBar().setTitle("Cards Remaining: " + (deckSize+currentCards.size()));
 		} else {
 			win();
 		}
@@ -430,8 +452,11 @@ private void pause() {
 	private void win() {
 		timeWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
 		timer.stop();
+		gameOver=true; // to reject pause dialog onStop()
+		DecimalFormat formatter = new DecimalFormat("#,###");
 		AlertDialog.Builder winBuilder = new AlertDialog.Builder(this);
-        winBuilder.setMessage("Congratulations! Final score: " + timer.getText());
+		winBuilder.setTitle("Game over!");
+        winBuilder.setMessage("Final score: \t" + formatter.format(score()));
         winBuilder.setCancelable(false);
         winBuilder.setPositiveButton("New Game",
                 new DialogInterface.OnClickListener() {
@@ -443,6 +468,17 @@ private void pause() {
         
         AlertDialog winDialog = winBuilder.create();
         winDialog.show();
+	}
+	
+	private long score() {
+		int baseScore = numSets * 100 + numNoSets * 500 - 10 * errors;
+		long ms = -timeWhenStopped;
+		float seconds = ms/1000;
+		seconds = seconds + noSetErrors;
+		float bonusSeconds = Math.max((600-seconds), 0);
+		long bonusScore = Math.round(1.1*Math.pow(2, 16)*(Math.pow(Math.E,(bonusSeconds/(650-bonusSeconds))) - 1));
+		long total = baseScore + bonusScore;
+		return total;
 	}
 	
 }

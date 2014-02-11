@@ -7,8 +7,9 @@
     <string name="new_game_button">New Game</string>
     <string name="high_scores_button">High Scores</string>
     <string name="help_button">How to Play</string>
-    <string name="title_activity_game">SET Game</string>
+    <string name="title_activity_game">Cards Remaining: </string>
     <string name="no_set">no set</string>
     <string name="pause">Pause</string>
+    <string name="action_help">Hint</string>
 
 </resources>
