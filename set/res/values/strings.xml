@@ -11,5 +11,7 @@
     <string name="no_set">no set</string>
     <string name="pause">Pause</string>
     <string name="action_help">Hint</string>
+    <string name="title_activity_scores">High Scores</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

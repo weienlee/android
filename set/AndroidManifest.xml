@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.weienlee.set.MainActivity" />
         </activity>
+        <activity
+            android:name="com.weienlee.set.ScoresActivity"
+            android:label="@string/title_activity_scores"
+            android:parentActivityName="com.weienlee.set.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.weienlee.set.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -4,6 +4,7 @@ package com.weienlee.set;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import android.os.Bundle;
@@ -18,25 +19,36 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 
 public class GameActivity extends Activity {
 
+	public static final String PREFS_NAME = "MyPrefsFile";
 	private GridView gridView;
 	private Deck deck;
 	private List<Card> deckCards;
 	private List<Card> currentCards = new ArrayList<Card>();
 	private List<String> selectedCards = new ArrayList<String> ();
 	private List<String> currentPointers = new ArrayList<String> ();
+	private List<Integer> highScores = new ArrayList<Integer> ();
 	private CardAdapter adapter;
 	private Chronometer timer;
 	private final int mask0 = 85; //0b01010101
@@ -72,6 +84,14 @@ public class GameActivity extends Activity {
 		
 		// set up timer
 		timer = ((Chronometer) findViewById(R.id.timer));
+		
+		// Restore preferences
+	    SharedPreferences scores = getSharedPreferences(PREFS_NAME, 0);
+	    for (int i=0; i<10; i++) {
+	    	Integer score = scores.getInt("score"+i, 0); 
+	    	highScores.add(score);
+	    }
+
 		
 		startGame();
 		gridView = (GridView) findViewById(R.id.gridView);
@@ -258,6 +278,7 @@ public class GameActivity extends Activity {
 		adapter.notifyDataSetChanged();
 	}
 	
+	@SuppressLint("NewApi")
 	private void toggleCard(View v, int position) {
 		String positionString = position+"";
 		
@@ -269,9 +290,60 @@ public class GameActivity extends Activity {
 			v.findViewById(R.id.card_border).setBackgroundColor(Color.BLACK);
 			if (selectedCards.size() == 3) {
 				if (testSet(selectedCards)) {
+					/*
+					List<ObjectAnimator> objAnimList = new ArrayList<ObjectAnimator>();
+					AnimatorSet animSet = new AnimatorSet();
+					animSet.addListener(new AnimatorListener() {
+
+						@Override
+						public void onAnimationCancel(Animator animation) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onAnimationEnd(Animator animation) {
+							// TODO Auto-generated method stub
+							dealNewSet();
+							adapter.notifyDataSetChanged();
+							gridView.getChildAt(Integer.parseInt(selectedCards.get(0))).setAlpha(0);
+							gridView.getChildAt(Integer.parseInt(selectedCards.get(1))).setAlpha(0);
+							gridView.getChildAt(Integer.parseInt(selectedCards.get(2))).setAlpha(0);
+							clearSelected();
+						}
+
+						@Override
+						public void onAnimationRepeat(Animator animation) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public void onAnimationStart(Animator animation) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
+					
+					ObjectAnimator anim1 = ObjectAnimator.ofFloat(gridView.getChildAt(Integer.parseInt(selectedCards.get(0))), "alpha", 0);
+					ObjectAnimator anim2 = ObjectAnimator.ofFloat(gridView.getChildAt(Integer.parseInt(selectedCards.get(1))), "alpha", 0);
+					ObjectAnimator anim3 = ObjectAnimator.ofFloat(gridView.getChildAt(Integer.parseInt(selectedCards.get(2))), "alpha", 0);
+					
+					objAnimList.add(anim1);
+					objAnimList.add(anim2);
+					objAnimList.add(anim3);
+					
+					ObjectAnimator[] objectAnimators = objAnimList.toArray(new ObjectAnimator[objAnimList.size()]);
+					animSet.playTogether(objectAnimators);
+					animSet.setDuration(250);
+					animSet.start();
+					*/
+
 					dealNewSet();
 					clearSelected();
 					adapter.notifyDataSetChanged();
+					
 					getActionBar().setTitle("Cards Remaining: " + (deckSize+currentCards.size()));
 					numSets += 1;
 				} else {
@@ -453,10 +525,38 @@ private void pause() {
 		timeWhenStopped = timer.getBase() - SystemClock.elapsedRealtime();
 		timer.stop();
 		gameOver=true; // to reject pause dialog onStop()
+		boolean newHighScore = false;
+		
+		int finalScore = score(); 
+		if (finalScore > highScores.get(9)) {
+			
+			// Save score if high score
+			highScores.add(finalScore);
+			Collections.sort(highScores, Collections.reverseOrder());
+			SharedPreferences scores = getSharedPreferences(PREFS_NAME, 0);
+			SharedPreferences.Editor editor = scores.edit();
+			for (int i=0; i<10; i++) {
+				editor.putInt("score" + i, highScores.get(i));
+			}
+		
+			// commit changes
+			editor.commit();
+		
+			newHighScore = true;
+		}
+			
 		DecimalFormat formatter = new DecimalFormat("#,###");
 		AlertDialog.Builder winBuilder = new AlertDialog.Builder(this);
-		winBuilder.setTitle("Game over!");
-        winBuilder.setMessage("Final score: \t" + formatter.format(score()));
+
+		if (newHighScore) {
+			winBuilder.setTitle("New high score!");
+		} else {
+			winBuilder.setTitle("Game over!");
+		}
+		
+		String winMessage = "Final score: \t" + formatter.format(finalScore);
+        winBuilder.setMessage(winMessage);
+        
         winBuilder.setCancelable(false);
         winBuilder.setPositiveButton("New Game",
                 new DialogInterface.OnClickListener() {
@@ -465,19 +565,26 @@ private void pause() {
                 dialog.cancel();
             }
         });
+        winBuilder.setNegativeButton("Main Menu",
+        		new DialogInterface.OnClickListener() {
+        	public void onClick(DialogInterface dialog, int id) {
+        		Intent intent = new Intent(GameActivity.this, MainActivity.class);
+        		startActivity(intent);
+        	}
+        });
         
         AlertDialog winDialog = winBuilder.create();
         winDialog.show();
 	}
 	
-	private long score() {
+	private int score() {
 		int baseScore = numSets * 100 + numNoSets * 500 - 10 * errors;
 		long ms = -timeWhenStopped;
 		float seconds = ms/1000;
 		seconds = seconds + noSetErrors;
 		float bonusSeconds = Math.max((600-seconds), 0);
-		long bonusScore = Math.round(1.1*Math.pow(2, 16)*(Math.pow(Math.E,(bonusSeconds/(650-bonusSeconds))) - 1));
-		long total = baseScore + bonusScore;
+		int bonusScore = (int) Math.round(1.1*Math.pow(2, 16)*(Math.pow(Math.E,(bonusSeconds/(650-bonusSeconds))) - 1));
+		int total = baseScore + bonusScore;
 		return total;
 	}
 	
