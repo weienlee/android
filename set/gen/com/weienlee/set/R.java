@@ -16,6 +16,8 @@ public final class R {
     }
     public static final class color {
         public static final int DDgray=0x7f050002;
+        public static final int black=0x7f050003;
+        public static final int border=0x7f050004;
         public static final int select=0x7f050000;
         public static final int transparent=0x7f050001;
     }
@@ -30,39 +32,41 @@ public final class R {
         public static final int activity_vertical_margin=0x7f060001;
     }
     public static final class drawable {
-        public static final int green_diamond_empty=0x7f020000;
-        public static final int green_diamond_filled=0x7f020001;
-        public static final int green_diamond_stripe=0x7f020002;
-        public static final int green_round_empty=0x7f020003;
-        public static final int green_round_filled=0x7f020004;
-        public static final int green_round_stripe=0x7f020005;
-        public static final int green_squiggle_empty=0x7f020006;
-        public static final int green_squiggle_filled=0x7f020007;
-        public static final int green_squiggle_stripe=0x7f020008;
-        public static final int ic_action_help=0x7f020009;
-        public static final int ic_action_overflow=0x7f02000a;
-        public static final int ic_launcher=0x7f02000b;
-        public static final int no_set_icon=0x7f02000c;
-        public static final int pause_icon=0x7f02000d;
-        public static final int pause_icon_bkup=0x7f02000e;
-        public static final int purple_diamond_empty=0x7f02000f;
-        public static final int purple_diamond_filled=0x7f020010;
-        public static final int purple_diamond_stripe=0x7f020011;
-        public static final int purple_round_empty=0x7f020012;
-        public static final int purple_round_filled=0x7f020013;
-        public static final int purple_round_stripe=0x7f020014;
-        public static final int purple_squiggle_empty=0x7f020015;
-        public static final int purple_squiggle_filled=0x7f020016;
-        public static final int purple_squiggle_stripe=0x7f020017;
-        public static final int red_diamond_empty=0x7f020018;
-        public static final int red_diamond_filled=0x7f020019;
-        public static final int red_diamond_stripe=0x7f02001a;
-        public static final int red_round_empty=0x7f02001b;
-        public static final int red_round_filled=0x7f02001c;
-        public static final int red_round_stripe=0x7f02001d;
-        public static final int red_squiggle_empty=0x7f02001e;
-        public static final int red_squiggle_filled=0x7f02001f;
-        public static final int red_squiggle_stripe=0x7f020020;
+        public static final int border_shape=0x7f020000;
+        public static final int card_shape=0x7f020001;
+        public static final int green_diamond_empty=0x7f020002;
+        public static final int green_diamond_filled=0x7f020003;
+        public static final int green_diamond_stripe=0x7f020004;
+        public static final int green_round_empty=0x7f020005;
+        public static final int green_round_filled=0x7f020006;
+        public static final int green_round_stripe=0x7f020007;
+        public static final int green_squiggle_empty=0x7f020008;
+        public static final int green_squiggle_filled=0x7f020009;
+        public static final int green_squiggle_stripe=0x7f02000a;
+        public static final int ic_action_help=0x7f02000b;
+        public static final int ic_action_overflow=0x7f02000c;
+        public static final int ic_launcher=0x7f02000d;
+        public static final int no_set_icon=0x7f02000e;
+        public static final int pause_icon=0x7f02000f;
+        public static final int pause_icon_bkup=0x7f020010;
+        public static final int purple_diamond_empty=0x7f020011;
+        public static final int purple_diamond_filled=0x7f020012;
+        public static final int purple_diamond_stripe=0x7f020013;
+        public static final int purple_round_empty=0x7f020014;
+        public static final int purple_round_filled=0x7f020015;
+        public static final int purple_round_stripe=0x7f020016;
+        public static final int purple_squiggle_empty=0x7f020017;
+        public static final int purple_squiggle_filled=0x7f020018;
+        public static final int purple_squiggle_stripe=0x7f020019;
+        public static final int red_diamond_empty=0x7f02001a;
+        public static final int red_diamond_filled=0x7f02001b;
+        public static final int red_diamond_stripe=0x7f02001c;
+        public static final int red_round_empty=0x7f02001d;
+        public static final int red_round_filled=0x7f02001e;
+        public static final int red_round_stripe=0x7f02001f;
+        public static final int red_squiggle_empty=0x7f020020;
+        public static final int red_squiggle_filled=0x7f020021;
+        public static final int red_squiggle_stripe=0x7f020022;
     }
     public static final class id {
         public static final int a_More=0x7f0a000c;

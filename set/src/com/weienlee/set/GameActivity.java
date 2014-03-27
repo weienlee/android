@@ -19,24 +19,18 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.support.v4.app.NavUtils;
-import android.animation.Animator;
-import android.animation.Animator.AnimatorListener;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 
 public class GameActivity extends Activity {
@@ -283,11 +277,19 @@ public class GameActivity extends Activity {
 		String positionString = position+"";
 		
 		if (selectedCards.contains(positionString)) {
-			v.findViewById(R.id.card_border).setBackgroundColor(Color.WHITE);
+			//v.findViewById(R.id.card_border).setBackgroundColor(Color.WHITE);
+			
+			GradientDrawable bg = (GradientDrawable) v.findViewById(R.id.card_border).getBackground();
+			bg.setStroke(4, this.getResources().getColor(R.color.border));
+			
 			selectedCards.remove(positionString);
 		} else {
 			selectedCards.add(positionString);
-			v.findViewById(R.id.card_border).setBackgroundColor(Color.BLACK);
+			//v.findViewById(R.id.card_border).setBackgroundColor(Color.BLACK);
+			
+			GradientDrawable bg = (GradientDrawable) v.findViewById(R.id.card_border).getBackground();
+			bg.setStroke(4, this.getResources().getColor(R.color.black));
+			
 			if (selectedCards.size() == 3) {
 				if (testSet(selectedCards)) {
 					/*
@@ -433,7 +435,10 @@ public class GameActivity extends Activity {
 	private void clearSelected() {
 		for (String card : selectedCards) {
 			int position = Integer.parseInt(card);
-			gridView.getChildAt(position).findViewById(R.id.card_border).setBackgroundColor(Color.WHITE);
+			//gridView.getChildAt(position).findViewById(R.id.card_border).setBackgroundColor(Color.WHITE);
+			
+			GradientDrawable bg = (GradientDrawable) gridView.getChildAt(position).findViewById(R.id.card_border).getBackground();
+			bg.setStroke(4, this.getResources().getColor(R.color.border));
 		}
 		selectedCards.clear();
 	}
