@@ -125,7 +125,7 @@ public class PlaybackActivity extends Activity {
 								currentTime = newTime;
 								try {
 									// subtract 5 to allow for thread processing time
-									Thread.sleep(Math.max(0,(long)(delay/(Math.pow(10,6))-6)));
+									Thread.sleep(Math.max(0,(long)(delay/(Math.pow(10,6))-5)));
 								} catch (InterruptedException e) {
 								}
 							}

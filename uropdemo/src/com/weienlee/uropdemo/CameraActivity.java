@@ -1,5 +1,6 @@
 package com.weienlee.uropdemo;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -72,6 +73,11 @@ public class CameraActivity extends Activity implements SensorEventListener{
 
 		myButton = (Button)findViewById(R.id.mybutton);
 		myButton.setOnClickListener(myButtonOnClickListener);
+		
+		try {
+			writer = new FileWriter("/sdcard/uropdemo_tmp.txt",false);
+		} catch (IOException e) {
+		}
 	}
 
 	
@@ -91,6 +97,11 @@ public class CameraActivity extends Activity implements SensorEventListener{
 				mediaRecorder.stop();  // stop the recording
 				releaseMediaRecorder(); // release the MediaRecorder object
 
+				// copy tmp to uropdemo.txt
+				File tmp = new File("/sdcard/uropdemo_tmp.txt");
+				File data = new File("/sdcard/uropdemo.txt");
+				tmp.renameTo(data);
+				
 				myButton.setText("REC");
 				recording = false;
 			}else{
@@ -104,12 +115,6 @@ public class CameraActivity extends Activity implements SensorEventListener{
 							Toast.LENGTH_LONG).show();
 					finish();
 				}
-				
-				try {
-					writer = new FileWriter("/sdcard/uropdemo.txt",false);
-				} catch (IOException e) {
-				}
-				
 				mediaRecorder.start();
 				recording = true;
 				myButton.setText("STOP");
@@ -176,6 +181,15 @@ public class CameraActivity extends Activity implements SensorEventListener{
 		if (mediaRecorder != null) {
 			mediaRecorder.stop();
 		}
+				
+		if (recording) {
+			recording = false;
+			// copy tmp to uropdemo.txt
+			File tmp = new File("/sdcard/uropdemo_tmp.txt");
+			File data = new File("/sdcard/uropdemo.txt");
+			tmp.renameTo(data);
+		}
+		
 		myButton.setText("REC");
 		recording = false;
 		
@@ -193,7 +207,10 @@ public class CameraActivity extends Activity implements SensorEventListener{
 		as possible*/
 		sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),SensorManager.SENSOR_DELAY_UI);
 
-		
+		try {
+			writer = new FileWriter("/sdcard/uropdemo_tmp.txt",false);
+		} catch (IOException e) {
+		}
 		
 		// setup camera and surface view again
 		if (myCamera == null) {
