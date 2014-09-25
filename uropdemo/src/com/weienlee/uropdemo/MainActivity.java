@@ -23,7 +23,7 @@ public class MainActivity extends Activity {
 
     public void startCamera(View view) {
         // Do something in response to button
-    	Intent intent = new Intent(this, VideocameraActivity.class);
+    	Intent intent = new Intent(this, CameraActivity.class);
     	startActivity(intent);
     }
     

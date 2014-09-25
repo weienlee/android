@@ -32,14 +32,6 @@
         <activity
             android:name="com.weienlee.uropdemo.CameraActivity"
             android:label="@string/title_activity_camera"
-            android:parentActivityName="com.weienlee.uropdemo.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.weienlee.uropdemo.MainActivity" />
-        </activity>
-        <activity
-            android:name="com.weienlee.uropdemo.VideocameraActivity"
-            android:label="@string/title_activity_videocamera"
             android:parentActivityName="com.weienlee.uropdemo.MainActivity"
             android:screenOrientation="landscape" >
             <meta-data
