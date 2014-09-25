@@ -10,4 +10,8 @@
     <string name="hello">Hello</string>
     <string name="title_activity_access_gyroscope">AccessGyroscope</string>
 	<string name="gyro_button">Gyroscope</string>
+	<string name="x_label">Orientation X (Roll): </string>
+	<string name="y_label">Orientation Y (Pitch): </string>
+	<string name="z_label">Orientation Z (Yaw): </string>
+	<string name="blank"></string>
 </resources>
