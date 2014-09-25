@@ -137,7 +137,7 @@ public class CameraActivity extends Activity implements SensorEventListener{
 
 		mediaRecorder.setOutputFile("/sdcard/uropdemo.mp4");
 		mediaRecorder.setMaxDuration(60000); // Set max duration 60 sec.
-		mediaRecorder.setMaxFileSize(50000000); // Set max file size 5M
+		mediaRecorder.setMaxFileSize(50000000); // Set max file size 50M
 
 		mediaRecorder.setPreviewDisplay(myCameraSurfaceView.getHolder().getSurface());
 
