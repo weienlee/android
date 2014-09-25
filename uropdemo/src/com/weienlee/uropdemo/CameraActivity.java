@@ -3,6 +3,7 @@ package com.weienlee.uropdemo;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -103,7 +104,12 @@ public class CameraActivity extends Activity implements SensorEventListener{
 							Toast.LENGTH_LONG).show();
 					finish();
 				}
-
+				
+				try {
+					writer = new FileWriter("/sdcard/uropdemo.txt",false);
+				} catch (IOException e) {
+				}
+				
 				mediaRecorder.start();
 				recording = true;
 				myButton.setText("STOP");
@@ -157,11 +163,14 @@ public class CameraActivity extends Activity implements SensorEventListener{
 	@Override
 	protected void onPause() {
 		super.onPause();
-		try {
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if (writer != null) {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		// stop recording
 		if (mediaRecorder != null) {
@@ -183,13 +192,8 @@ public class CameraActivity extends Activity implements SensorEventListener{
 		callbacks defined in this class, and gather the sensor information as quick
 		as possible*/
 		sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),SensorManager.SENSOR_DELAY_UI);
+
 		
-		try {
-			writer = new FileWriter("/sdcard/uropdemo.txt",false);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		// setup camera and surface view again
 		if (myCamera == null) {
