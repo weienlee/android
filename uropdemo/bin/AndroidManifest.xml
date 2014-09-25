@@ -39,8 +39,13 @@
                 android:value="com.weienlee.uropdemo.MainActivity" />
         </activity>
         <activity
-            android:name="com.weienlee.uropdemo.AccessGyroscope"
-            android:label="@string/title_activity_access_gyroscope" >
+            android:name="com.weienlee.uropdemo.PlaybackActivity"
+            android:label="@string/title_activity_playback"
+            android:parentActivityName="com.weienlee.uropdemo.MainActivity"
+            android:screenOrientation="landscape" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.weienlee.uropdemo.MainActivity" />
         </activity>
     </application>
 

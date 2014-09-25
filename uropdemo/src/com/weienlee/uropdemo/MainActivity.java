@@ -27,9 +27,9 @@ public class MainActivity extends Activity {
     	startActivity(intent);
     }
     
-    public void startGyroscope(View view) {
+    public void startPlayback(View view) {
         // Do something in response to button
-    	Intent intent = new Intent(this, AccessGyroscope.class);
+    	Intent intent = new Intent(this, PlaybackActivity.class);
     	startActivity(intent);
     }
     

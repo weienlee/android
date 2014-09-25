@@ -14,7 +14,8 @@
         android:layout_height="0dp"
         android:layout_weight="30"
         android:gravity="center"
-        android:text="@string/hello_world" />
+        android:textSize="20sp"
+        android:text="@string/title" />
     
 	<Button
         android:layout_width="fill_parent"
@@ -30,7 +31,7 @@
         android:layout_height="0dp"
         android:layout_weight="10"
         android:gravity="center"
-        android:onClick="startGyroscope"
-        android:text="@string/gyro_button" />
+        android:onClick="startPlayback"
+        android:text="@string/playback_button" />
 
 </LinearLayout>

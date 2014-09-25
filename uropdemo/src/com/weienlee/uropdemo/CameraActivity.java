@@ -66,7 +66,7 @@ public class CameraActivity extends Activity implements SensorEventListener{
 		}
 
 		myCameraSurfaceView = new MyCameraSurfaceView(this, myCamera);
-		myCameraPreview = (FrameLayout)findViewById(R.id.videoview);
+		myCameraPreview = (FrameLayout)findViewById(R.id.cameraview);
 		myCameraPreview.addView(myCameraSurfaceView);
 
 		myButton = (Button)findViewById(R.id.mybutton);
@@ -185,7 +185,7 @@ public class CameraActivity extends Activity implements SensorEventListener{
 		sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),SensorManager.SENSOR_DELAY_UI);
 		
 		try {
-			writer = new FileWriter("/sdcard/uropdemo.txt",true);
+			writer = new FileWriter("/sdcard/uropdemo.txt",false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -333,11 +333,13 @@ public class CameraActivity extends Activity implements SensorEventListener{
 		x_value.setText(x_str);
 		y_value.setText(y_str);
 		z_value.setText(z_str);
-		try {
-			writer.write(x_str+", "+y_str+", "+z_str+"\n");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (recording) {
+			try {
+				writer.write(x_str+"\t"+y_str+"\t"+z_str+"\t"+event.timestamp+"\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
